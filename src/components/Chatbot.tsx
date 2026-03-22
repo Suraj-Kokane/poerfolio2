@@ -10,13 +10,8 @@ interface Message {
 }
 
 // ─── Constants ───────────────────────────────────────────────
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const API_KEY = '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';
-
-// Use the OpenRouter free models router to automatically pick an available free model
-const MODELS = [
-  'openrouter/free',
-];
+const GEMINI_API_KEY = 'AIzaSyAoVMxi7caRkMA7lF7hdHUfNlsp0B6Vf70';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT = `You are a friendly and professional AI assistant embedded in Suraj Kokane's portfolio website. You help visitors learn about Suraj's skills, projects, experience, and background. Suraj is an ECE engineer specializing in VLSI Design, RTL Design, and Digital Electronics. He has 3+ years of learning, 5+ VLSI projects, and 10+ HDL modules. His skills include Verilog, VHDL, SystemVerilog, Cadence, Vivado, and ModelSim. You answer questions concisely and helpfully. If asked about things outside the scope of the portfolio, politely redirect the conversation. Keep your answers brief (2-4 sentences) unless the user asks for detail.`;
 
@@ -70,64 +65,51 @@ const formatTime = (d: Date) =>
 
 const genId = () => Math.random().toString(36).slice(2, 10);
 
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/** Try each model in order; return on first success. */
-async function callOpenRouter(
+/** Call Gemini API for chat completions */
+async function callGemini(
   history: { role: string; content: string }[]
 ): Promise<string> {
-  let lastError = '';
+  try {
+    const contents = history.map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }],
+    }));
 
-  for (let i = 0; i < MODELS.length; i++) {
-    // Small delay between retries (skip first attempt)
-    if (i > 0) await delay(1000);
-
-    try {
-      const res = await fetch(OPENROUTER_API_URL, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.origin,
-          'X-Title': 'Suraj Kokane Portfolio',
+    const res = await fetch(GEMINI_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: SYSTEM_PROMPT }]
         },
-        body: JSON.stringify({
-          model: MODELS[i],
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...history,
-          ],
-          max_tokens: 300,
+        contents: contents,
+        generationConfig: {
+          maxOutputTokens: 300,
           temperature: 0.7,
-        }),
-      });
-
-      if (res.status === 429) {
-        lastError = 'Rate limited — trying another model…';
-        continue; // try next model
-      }
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => null);
-        lastError = errBody?.error?.message ?? `API error ${res.status}`;
-        
-        if (lastError === 'User not found.' || res.status === 401) {
-          lastError = 'API Key invalid or account not found. Please check your OpenRouter API key.';
         }
-        continue;
+      }),
+    });
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null);
+      let lastError = errBody?.error?.message ?? `API error ${res.status}`;
+      
+      if (res.status === 400 && lastError.toLowerCase().includes("api key not valid")) {
+        lastError = 'API Key invalid. Please check your Gemini API key on line 13.';
       }
-
-      const data = await res.json();
-      const reply = data.choices?.[0]?.message?.content?.trim();
-      if (reply) return reply;
-
-      lastError = "Empty response from AI.";
-    } catch (err: unknown) {
-      lastError = err instanceof Error ? err.message : 'Network error';
+      throw new Error(lastError);
     }
-  }
 
-  throw new Error(lastError || 'All models failed. Please try again later.');
+    const data = await res.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (reply) return reply;
+
+    throw new Error("Empty response from AI.");
+  } catch (err: unknown) {
+    throw new Error(err instanceof Error ? err.message : 'Network error');
+  }
 }
 
 // ─── Component ───────────────────────────────────────────────
@@ -200,7 +182,7 @@ export default function Chatbot() {
           content: m.content,
         }));
 
-        const reply = await callOpenRouter(history);
+        const reply = await callGemini(history);
 
         const botMsg: Message = {
           id: genId(),
