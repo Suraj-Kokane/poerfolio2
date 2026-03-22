@@ -15,6 +15,7 @@ import ScrollStack from './components/ScrollStack';
 import LogicSimulator from './components/LogicSimulator';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Chatbot from './components/Chatbot';
 
 // Use same css as before
 import './index.css';
@@ -114,6 +115,7 @@ function App() {
         
         {/* Custom global cursor glow effect */}
         <div className="cursor-glow" id="cursor-glow" aria-hidden="true" />
+        <Chatbot />
       </div>
     </>
   );
