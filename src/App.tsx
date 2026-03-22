@@ -10,6 +10,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
+import Achievements from './components/Achievements';
 import Experience from './components/Experience';
 import ScrollStack from './components/ScrollStack';
 import LogicSimulator from './components/LogicSimulator';
@@ -102,6 +103,7 @@ function App() {
             } />
             <Route path="/skills" element={<Skills />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/achievements" element={<Achievements />} />
             <Route path="/contact" element={
               <>
                 <LogicSimulator />

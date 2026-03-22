@@ -11,7 +11,7 @@ interface Message {
 
 // ─── Constants ───────────────────────────────────────────────
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const API_KEY = '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';
+const API_KEY = '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';
 
 // Use the OpenRouter free models router to automatically pick an available free model
 const MODELS = [
@@ -110,6 +110,10 @@ async function callOpenRouter(
       if (!res.ok) {
         const errBody = await res.json().catch(() => null);
         lastError = errBody?.error?.message ?? `API error ${res.status}`;
+        
+        if (lastError === 'User not found.' || res.status === 401) {
+          lastError = 'API Key invalid or account not found. Please check your OpenRouter API key.';
+        }
         continue;
       }
 
