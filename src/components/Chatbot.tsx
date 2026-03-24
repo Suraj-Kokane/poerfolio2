@@ -10,7 +10,7 @@ interface Message {
 }
 
 // ─── Constants ───────────────────────────────────────────────
-const GEMINI_API_KEY = 'AIzaSyAoVMxi7caRkMA7lF7hdHUfNlsp0B6Vf70';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY_HERE';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT = `You are a friendly and professional AI assistant embedded in Suraj Kokane's portfolio website. You help visitors learn about Suraj's skills, projects, experience, and background. Suraj is an ECE engineer specializing in VLSI Design, RTL Design, and Digital Electronics. He has 3+ years of learning, 5+ VLSI projects, and 10+ HDL modules. His skills include Verilog, VHDL, SystemVerilog, Cadence, Vivado, and ModelSim. You answer questions concisely and helpfully. If asked about things outside the scope of the portfolio, politely redirect the conversation. Keep your answers brief (2-4 sentences) unless the user asks for detail.`;
