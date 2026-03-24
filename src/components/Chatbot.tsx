@@ -104,8 +104,12 @@ async function callGemini(
       const errBody = await res.json().catch(() => null);
       let lastError = errBody?.error?.message ?? `API error ${res.status}`;
       
-      if (res.status === 400 && lastError.toLowerCase().includes("api key not valid")) {
-        lastError = 'API Key invalid. Please check your Gemini API key on line 13.';
+      if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+        lastError = 'API Key not found in .env file. Please check VITE_GEMINI_API_KEY and restart your server.';
+      } else if (res.status === 400 && lastError.toLowerCase().includes("api key not valid")) {
+        lastError = 'The API Key provided is invalid or has been disabled by Google. Please generate a new key.';
+      } else if (res.status === 404) {
+        lastError = 'Model gemini-2.5-flash not found. Trying alternative configurations...';
       }
       throw new Error(lastError);
     }
