@@ -75,27 +75,30 @@ async function callGemini(
   history: { role: string; content: string }[]
 ): Promise<string> {
   try {
-    const contents = history.map((msg) => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.content }],
-    }));
-
-    const res = await fetch(GEMINI_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: SYSTEM_PROMPT }]
+      const contents = [
+        {
+          role: 'user',
+          parts: [{ text: `SYSTEM INSTRUCTION: ${SYSTEM_PROMPT}` }],
         },
-        contents: contents,
-        generationConfig: {
-          maxOutputTokens: 300,
-          temperature: 0.7,
-        }
-      }),
-    });
+        ...history.map((msg) => ({
+          role: msg.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: msg.content }],
+        })),
+      ];
+
+      const res = await fetch(GEMINI_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: contents,
+          generationConfig: {
+            maxOutputTokens: 300,
+            temperature: 0.7,
+          }
+        }),
+      });
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => null);
