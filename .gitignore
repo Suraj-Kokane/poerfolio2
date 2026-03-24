@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# .env files
+# .env secrets (pushed Mar 24)
 .env
 .env.*
 !.env.example
