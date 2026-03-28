@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import './Chatbot.css';
+import { useSoundEffects } from '../hooks/useSoundEffects';
 
 // ─── Types ───────────────────────────────────────────────────
 interface Message {
@@ -134,6 +135,7 @@ export default function Chatbot() {
   const [error, setError] = useState<string | null>(null);
   const [hasNewMessage, setHasNewMessage] = useState(false);
   const [lastFailedText, setLastFailedText] = useState<string | null>(null);
+  const { playSound } = useSoundEffects();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -152,6 +154,7 @@ export default function Chatbot() {
 
   // ── Open / Close ──
   const handleToggle = () => {
+    playSound('pop');
     if (isOpen) {
       setIsClosing(true);
       setTimeout(() => {
@@ -179,6 +182,7 @@ export default function Chatbot() {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, userMsg!]);
+        playSound('sent');
       }
 
       setInputValue('');
@@ -204,6 +208,7 @@ export default function Chatbot() {
         };
 
         setMessages((prev) => [...prev, botMsg]);
+        playSound('recv');
         if (!isOpen) setHasNewMessage(true);
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : 'Something went wrong.';

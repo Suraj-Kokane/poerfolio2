@@ -179,6 +179,11 @@
   border-color: rgba(0, 153, 204, 0.4);
 }
 
+.toggle-track.muted {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
 .toggle-thumb {
   width: 18px;
   height: 18px;
@@ -195,6 +200,12 @@
 .toggle-light .toggle-thumb {
   transform: translateX(20px);
   background: linear-gradient(135deg, #0099cc, #6040e0);
+}
+
+.toggle-track.muted .toggle-thumb {
+  transform: translateX(20px);
+  background: linear-gradient(135deg, #ff6b6b, #ff8787);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
 }
 
 /* ========== CTA ========== */

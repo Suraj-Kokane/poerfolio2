@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
+import { useSoundEffects } from '../hooks/useSoundEffects';
 
 interface NavbarProps {
   theme: 'dark' | 'light';
@@ -17,10 +18,27 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ];
 
+const SpeakerIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+  </svg>
+);
+
+const MuteIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 5L6 9H2V15H6L11 19V5Z" />
+    <line x1="23" y1="9" x2="17" y2="15" />
+    <line x1="17" y1="9" x2="23" y2="15" />
+  </svg>
+);
+
 const Navbar = ({ theme, onThemeToggle }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState(() => localStorage.getItem('portfolio_muted') === 'true');
   const location = useLocation();
+  const { playSound } = useSoundEffects();
 
   useEffect(() => {
     const onScroll = () => {
@@ -60,7 +78,10 @@ const Navbar = ({ theme, onThemeToggle }: NavbarProps) => {
             <Link
               to={href}
               className={`navbar-link ${location.pathname === href ? 'active' : ''}`}
-              onClick={handleNavClick}
+              onClick={() => {
+                handleNavClick();
+                playSound('click');
+              }}
             >
               {label}
               <span className="link-underline" />
@@ -71,6 +92,26 @@ const Navbar = ({ theme, onThemeToggle }: NavbarProps) => {
 
       {/* Right actions */}
       <div className="navbar-actions">
+        {/* Mute toggle */}
+        <button
+          className="theme-toggle"
+          onClick={() => {
+            const newMuted = !isMuted;
+            setIsMuted(newMuted);
+            localStorage.setItem('portfolio_muted', String(newMuted));
+            if (!newMuted) playSound('click');
+          }}
+          aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+          title={isMuted ? "Unmute sounds" : "Mute sounds"}
+          id="mute-toggle-btn"
+        >
+          <div className={`toggle-track ${isMuted ? 'muted' : ''}`}>
+             <div className="toggle-thumb">
+                {isMuted ? <MuteIcon /> : <SpeakerIcon />}
+             </div>
+          </div>
+        </button>
+
         {/* Theme toggle */}
         <button
           className="theme-toggle"
@@ -97,7 +138,10 @@ const Navbar = ({ theme, onThemeToggle }: NavbarProps) => {
         <Link
           to="/contact"
           className="navbar-cta"
-          onClick={handleNavClick}
+          onClick={() => {
+            handleNavClick();
+            playSound('click');
+          }}
           id="navbar-cta-btn"
         >
           Hire Me
@@ -106,7 +150,10 @@ const Navbar = ({ theme, onThemeToggle }: NavbarProps) => {
         {/* Hamburger */}
         <button
           className={`hamburger ${menuOpen ? 'hamburger-open' : ''}`}
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => {
+            setMenuOpen(!menuOpen);
+            playSound('pop');
+          }}
           aria-label="Toggle menu"
           id="hamburger-btn"
         >
@@ -132,6 +179,16 @@ const Navbar = ({ theme, onThemeToggle }: NavbarProps) => {
         <div className="mobile-menu-actions">
           <button className="theme-toggle" onClick={onThemeToggle}>
             {theme === 'dark' ? '☀ Light Mode' : '☽ Dark Mode'}
+          </button>
+          <button 
+            className="theme-toggle" 
+            onClick={() => {
+              const newMuted = !isMuted;
+              setIsMuted(newMuted);
+              localStorage.setItem('portfolio_muted', String(newMuted));
+            }}
+          >
+            {isMuted ? '🔊 Unmute Sounds' : '🔇 Mute Sounds'}
           </button>
         </div>
       </div>

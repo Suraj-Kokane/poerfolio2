@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import './LogicSimulator.css';
+import { useSoundEffects } from '../hooks/useSoundEffects';
 
 const LogicSimulator = () => {
   // Simulator state: Inputs A and B
   const [inputA, setInputA] = useState(0);
   const [inputB, setInputB] = useState(0);
+  const { playSound } = useSoundEffects();
 
   // Gates output states
   const gates = {
@@ -42,8 +44,14 @@ const LogicSimulator = () => {
     setPulse(prev => prev + 1);
   }, [inputA, inputB]);
 
-  const toggleA = () => setInputA(a => a ^ 1);
-  const toggleB = () => setInputB(b => b ^ 1);
+  const toggleA = () => {
+    playSound('toggle');
+    setInputA(a => a ^ 1);
+  };
+  const toggleB = () => {
+    playSound('toggle');
+    setInputB(b => b ^ 1);
+  };
 
   // Generate SVG path for a waveform logic signal based on binary history array
   const createWaveformPath = (signalHistory: number[]) => {

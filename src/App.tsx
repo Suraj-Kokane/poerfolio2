@@ -3,6 +3,9 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+// Hooks
+import { useSoundEffects } from './hooks/useSoundEffects';
+
 // Components
 import Loader from './components/Loader';
 import Navbar from './components/Navbar';
@@ -25,6 +28,7 @@ function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const { playSound } = useSoundEffects();
 
   // Scroll to top on route change
   useEffect(() => {
@@ -70,6 +74,7 @@ function App() {
   }, []);
 
   const toggleTheme = () => {
+    playSound('toggle');
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
