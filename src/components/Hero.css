@@ -39,9 +39,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 60px;
+  gap: 20px;
   padding-top: 40px;
   padding-bottom: 80px;
+  position: relative;
 }
 
 /* ========== HERO CONTENT ========== */
@@ -49,6 +50,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  position: relative;
+  z-index: 3;
 }
 
 /* Available tag */
@@ -152,206 +155,218 @@
 /* ========== HERO VISUAL ========== */
 .hero-visual {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   position: relative;
+  z-index: 1;
+  margin-left: -60px;
 }
 
 .hero-chip-display {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 460px;
+  height: 560px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
 }
 
-/* ========== DISPLAY CHIP ========== */
+/* ========== PORTRAIT IMAGE ========== */
 .display-chip {
   position: relative;
   z-index: 2;
-  width: 160px;
-  height: 160px;
-}
-
-.display-chip-inner {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0e0e28, #181830);
-  border: 2px solid rgba(124, 92, 252, 0.6);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 60px rgba(124, 92, 252, 0.3),
-    0 0 120px rgba(124, 92, 252, 0.1),
-    inset 0 0 30px rgba(124, 92, 252, 0.08);
 }
 
-.display-chip-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 8px;
-}
-
-.grid-cell {
-  width: 10px;
-  height: 10px;
-  background: rgba(124, 92, 252, 0.15);
-  border-radius: 1px;
-  transition: background 0.3s ease;
-  animation: cellFlicker 3s ease-in-out infinite;
-}
-
-.grid-cell.active {
-  background: rgba(124, 92, 252, 0.5);
-  box-shadow: 0 0 4px rgba(124, 92, 252, 0.6);
-}
-
-.grid-cell:nth-child(2n) { animation-delay: 0.5s; }
-.grid-cell:nth-child(3n) { animation-delay: 1s; }
-.grid-cell:nth-child(4n) { animation-delay: 1.5s; }
-
-@keyframes cellFlicker {
-  0%, 100% { opacity: 0.4; }
-  40% { opacity: 1; }
-  60% { opacity: 0.7; }
-}
-
-.display-chip-center {
+/* Ambient blue glow behind the portrait */
+.display-chip::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(99, 140, 255, 0.3) 0%,
+    rgba(124, 92, 252, 0.18) 30%,
+    rgba(0, 212, 255, 0.1) 60%,
+    transparent 80%
+  );
+  border-radius: 50%;
+  filter: blur(50px);
   pointer-events: none;
+  animation: ambientGlow 5s ease-in-out infinite alternate;
 }
 
-.display-chip-label {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #7c5cfc, #00d4ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.display-chip-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: rgba(0, 212, 255, 0.7);
-  letter-spacing: 0.1em;
-}
-
-.chip-scan {
-  position: absolute;
-  top: -2px;
-  left: 0;
+.display-chip-img {
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.8), transparent);
-  animation: scanLoop 2s linear infinite;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 0 60px rgba(124, 92, 252, 0.2))
+          drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5));
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 62%,
+    transparent 92%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 62%,
+    transparent 92%
+  );
 }
 
-@keyframes scanLoop {
-  from { top: -2px; }
-  to { top: 100%; }
+@keyframes ambientGlow {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
-/* Pins */
-.display-pins {
-  position: absolute;
-  display: flex;
-  gap: 12px;
-}
-
-.display-pins-top { top: -10px; left: 50%; transform: translateX(-50%); }
-.display-pins-bottom { bottom: -10px; left: 50%; transform: translateX(-50%); }
-.display-pins-left {
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  flex-direction: column;
-}
-.display-pins-right {
-  right: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  flex-direction: column;
-}
-
-.display-pin {
-  width: 16px;
-  height: 5px;
-  background: linear-gradient(90deg, rgba(124,92,252,0.6), rgba(0,212,255,0.6));
-  border-radius: 2px;
-  animation: pinPulse 2s ease-in-out infinite;
-}
-
-.display-pin-v {
-  width: 5px;
-  height: 16px;
-}
-
-.display-pin:nth-child(2n) { animation-delay: 0.3s; }
-.display-pin:nth-child(3n) { animation-delay: 0.6s; }
-
-@keyframes pinPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-/* ========== ORBIT BADGES ========== */
-.orbit-badge {
+/* ========== PROFESSIONAL KEYWORD BADGES ========== */
+.pro-badge {
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 30px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  backdrop-filter: blur(12px);
+  gap: 8px;
+  padding: 7px 16px;
+  background: rgba(15, 15, 30, 0.65);
+  border: 1px solid rgba(124, 92, 252, 0.2);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   white-space: nowrap;
-  box-shadow: var(--shadow-card);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.35),
+    0 0 1px rgba(124, 92, 252, 0.3),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
+  cursor: default;
+  z-index: 4;
+  will-change: transform;
+  transition: border-color 0.35s ease,
+              box-shadow 0.35s ease,
+              background 0.35s ease;
 }
 
-.orbit-icon {
-  font-size: 14px;
+.pro-badge:hover {
+  border-color: rgba(124, 92, 252, 0.45);
+  background: rgba(20, 18, 42, 0.8);
+  box-shadow:
+    0 6px 28px rgba(0, 0, 0, 0.4),
+    0 0 18px rgba(124, 92, 252, 0.15),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
 }
 
-.orbit-badge-1 {
-  top: 10px;
-  right: -20px;
-  animation: badgeFloat 4s ease-in-out infinite;
+.badge-pulse {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 6px rgba(124, 92, 252, 0.6);
+  flex-shrink: 0;
 }
 
-.orbit-badge-2 {
-  bottom: 40px;
-  left: -30px;
-  animation: badgeFloat 4s ease-in-out infinite 1.3s;
+.badge-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: rgba(232, 232, 240, 0.85);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
 }
 
-.orbit-badge-3 {
-  bottom: -10px;
-  right: 0;
-  animation: badgeFloat 4s ease-in-out infinite 2.6s;
+/* ─── Badge 1: SEMICONDUCTOR DESIGN — top-right ─── */
+.pro-badge-1 {
+  top: 4%;
+  right: -8%;
+  animation: floatBadge1 5.5s ease-in-out infinite;
 }
 
-@keyframes badgeFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+/* ─── Badge 2: CHIP ARCHITECTURE — upper-left ─── */
+.pro-badge-2 {
+  top: 15%;
+  left: -12%;
+  animation: floatBadge2 6.2s ease-in-out infinite;
+}
+
+/* ─── Badge 3: RTL ENGINEERING — lower-left ─── */
+.pro-badge-3 {
+  bottom: 28%;
+  left: -15%;
+  animation: floatBadge3 5.8s ease-in-out infinite;
+}
+
+/* ─── Badge 4: DIGITAL SYSTEMS — lower-right ─── */
+.pro-badge-4 {
+  bottom: 20%;
+  right: -10%;
+  animation: floatBadge4 6.8s ease-in-out infinite;
+}
+
+/* ─── Badge 5: HARDWARE INNOVATION — bottom-center ─── */
+.pro-badge-5 {
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: floatBadge5 7s ease-in-out infinite;
+}
+
+/* ─── Staggered floating keyframes ─── */
+@keyframes floatBadge1 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  33%      { transform: translateY(-8px) translateX(2px); }
+  66%      { transform: translateY(-3px) translateX(-1px); }
+}
+
+@keyframes floatBadge2 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  40%      { transform: translateY(-7px) translateX(-3px); }
+  70%      { transform: translateY(-2px) translateX(1px); }
+}
+
+@keyframes floatBadge3 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  35%      { transform: translateY(-9px) translateX(2px); }
+  65%      { transform: translateY(-4px) translateX(-2px); }
+}
+
+@keyframes floatBadge4 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  30%      { transform: translateY(-6px) translateX(-2px); }
+  60%      { transform: translateY(-10px) translateX(1px); }
+}
+
+@keyframes floatBadge5 {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  45%      { transform: translateX(-50%) translateY(-8px); }
+  75%      { transform: translateX(-50%) translateY(-3px); }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .pro-badge-1,
+  .pro-badge-2,
+  .pro-badge-3,
+  .pro-badge-4,
+  .pro-badge-5 {
+    animation: none;
+  }
 }
 
 /* ========== SIGNAL LINES ========== */
@@ -433,7 +448,7 @@
   .hero-container {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 40px;
+    gap: 20px;
   }
 
   .hero-content {
@@ -456,8 +471,29 @@
     justify-content: center;
   }
 
-  .orbit-badge-1 { right: -10px; }
-  .orbit-badge-2 { left: -15px; }
+  .hero-visual {
+    align-items: center;
+    margin-left: 0;
+  }
+
+  .hero-chip-display {
+    width: 340px;
+    height: 420px;
+  }
+
+  /* Tighten badge positions for tablet */
+  .pro-badge-1 { right: -4%; }
+  .pro-badge-2 { left: -6%; }
+  .pro-badge-3 { left: -8%; bottom: 30%; }
+  .pro-badge-4 { right: -4%; }
+  .pro-badge-5 { bottom: 6%; }
+
+  .pro-badge {
+    padding: 6px 12px;
+  }
+  .badge-label {
+    font-size: 0.62rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -467,8 +503,21 @@
   }
   .stat-item { width: 100%; max-width: 200px; }
   .hero-title { font-size: 2.2rem; }
-  .hero-chip-display { width: 240px; height: 240px; }
-  .display-chip { width: 130px; height: 130px; }
-  
-  .orbit-badge-1, .orbit-badge-3 { display: none; }
+  .hero-chip-display { width: 280px; height: 360px; }
+
+  /* Show only 3 badges on mobile to prevent clutter */
+  .pro-badge-2,
+  .pro-badge-5 { display: none; }
+
+  .pro-badge-1 { right: -2%; top: 2%; }
+  .pro-badge-3 { left: -4%; bottom: 32%; }
+  .pro-badge-4 { right: -2%; bottom: 22%; }
+
+  .pro-badge {
+    padding: 5px 10px;
+  }
+  .badge-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
 }

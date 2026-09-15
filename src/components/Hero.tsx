@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import './Hero.css';
+import profileImage from '../me.png';
 
 const Hero = () => {
   const heroRef = useRef<HTMLElement>(null);
@@ -153,51 +154,45 @@ const Hero = () => {
         {/* Right: Visual */}
         <div ref={floatRef} className="hero-visual" aria-hidden="true">
           <div className="hero-chip-display">
-            {/* Central chip */}
+            {/* Profile image */}
             <div className="display-chip">
-              <div className="display-chip-inner">
-                <div className="display-chip-grid">
-                  {Array.from({ length: 16 }).map((_, i) => (
-                    <div key={i} className={`grid-cell ${Math.random() > 0.5 ? 'active' : ''}`} />
-                  ))}
-                </div>
-                <div className="display-chip-center">
-                  <span className="display-chip-label">RTL</span>
-                  <span className="display-chip-sub">28nm</span>
-                </div>
-                <div className="chip-scan" />
-              </div>
-              {/* Pins */}
-              <div className="display-pins display-pins-top">
-                {Array.from({ length: 8 }).map((_, i) => <div key={i} className="display-pin" />)}
-              </div>
-              <div className="display-pins display-pins-bottom">
-                {Array.from({ length: 8 }).map((_, i) => <div key={i} className="display-pin" />)}
-              </div>
-              <div className="display-pins display-pins-left">
-                {Array.from({ length: 5 }).map((_, i) => <div key={i} className="display-pin display-pin-v" />)}
-              </div>
-              <div className="display-pins display-pins-right">
-                {Array.from({ length: 5 }).map((_, i) => <div key={i} className="display-pin display-pin-v" />)}
-              </div>
+              <img
+                src={profileImage}
+                alt="Suraj Kokane"
+                className="display-chip-img"
+              />
             </div>
 
-            {/* Orbiting badges */}
-            <div className="orbit-badge orbit-badge-1">
-              <span className="orbit-icon">⚡</span>
-              <span>RTL Design</span>
+            {/* Professional keyword badges */}
+            <div className="pro-badge pro-badge-1">
+              <span className="badge-pulse" />
+              <span className="badge-label">Semiconductor Design</span>
             </div>
-            <div className="orbit-badge orbit-badge-2">
-              <span className="orbit-icon">🔌</span>
-              <span>VLSI</span>
+            <div className="pro-badge pro-badge-2">
+              <span className="badge-pulse" />
+              <span className="badge-label">Chip Architecture</span>
             </div>
-            <div className="orbit-badge orbit-badge-3">
-              <span className="orbit-icon">🔬</span>
-              <span>DRC/LVS</span>
+            <div className="pro-badge pro-badge-3">
+              <span className="badge-pulse" />
+              <span className="badge-label">RTL Engineering</span>
+            </div>
+            <div className="pro-badge pro-badge-4">
+              <span className="badge-pulse" />
+              <span className="badge-label">Digital Systems</span>
+            </div>
+            <div className="pro-badge pro-badge-5">
+              <span className="badge-pulse" />
+              <span className="badge-label">Hardware Innovation</span>
             </div>
 
             {/* Signal lines */}
             <svg className="hero-signal-svg" viewBox="0 0 300 300">
+              <defs>
+                <linearGradient id="signalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#7c5cfc" />
+                  <stop offset="100%" stopColor="#00d4ff" />
+                </linearGradient>
+              </defs>
               <path d="M150,150 Q100,80 50,60" className="signal-path" style={{ animationDelay: '0s' }} />
               <path d="M150,150 Q200,80 250,60" className="signal-path" style={{ animationDelay: '0.5s' }} />
               <path d="M150,150 Q80,200 40,240" className="signal-path" style={{ animationDelay: '1s' }} />
