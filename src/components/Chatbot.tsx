@@ -11,11 +11,11 @@ interface Message {
 }
 
 // ─── Constants ───────────────────────────────────────────────
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY_HERE';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // Debug log (remove in production)
-if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+if (!GEMINI_API_KEY) {
   console.warn("Chatbot: VITE_GEMINI_API_KEY is not loaded from .env. Please restart your dev server.");
 }
 
@@ -105,7 +105,7 @@ async function callGemini(
       const errBody = await res.json().catch(() => null);
       let lastError = errBody?.error?.message ?? `API error ${res.status}`;
       
-      if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+      if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
         lastError = 'API Key not found in .env file. Please check VITE_GEMINI_API_KEY and restart your server.';
       } else if (res.status === 400 && lastError.toLowerCase().includes("api key not valid")) {
         lastError = 'The API Key provided is invalid or has been disabled by Google. Please generate a new key.';

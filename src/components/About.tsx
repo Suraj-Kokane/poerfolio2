@@ -1,4 +1,5 @@
 import './About.css';
+import profileImage from '../me.png';
 
 const About = () => {
   return (
@@ -14,15 +15,14 @@ const About = () => {
             data-aos-duration="800"
           >
             <div className="about-photo-wrapper">
-              {/* Placeholder avatar with initials - circuit-themed */}
+              {/* Profile avatar with image */}
               <div className="about-avatar">
                 <div className="avatar-inner">
-                  <span className="avatar-initials">SK</span>
-                  <div className="avatar-circuit-lines">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <div key={i} className={`av-line av-line-${i}`} />
-                    ))}
-                  </div>
+                  <img
+                    src={profileImage}
+                    alt="Suraj Kokane"
+                    className="avatar-img"
+                  />
                 </div>
                 <div className="avatar-ring ring-a" />
                 <div className="avatar-ring ring-b" />
