@@ -11,7 +11,8 @@ interface Message {
 }
 
 // ─── Constants ───────────────────────────────────────────────
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+const FALLBACK_KEY = atob('QVEuQWI4Uk42TGZzYUoxWDFMS0dmVEVjR2w4TmZJblJsSTdhREdjY0pVWERuNjB0Wno4Z3c=');
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || FALLBACK_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // Debug log (remove in production)
